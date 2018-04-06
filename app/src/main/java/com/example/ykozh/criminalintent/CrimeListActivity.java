@@ -1,6 +1,8 @@
 package com.example.ykozh.criminalintent;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 
 public class CrimeListActivity extends SingleFragmentActivity implements CrimeListFragment.Callbacks,CrimeFragment.Callbacks{
 
@@ -33,5 +35,7 @@ public class CrimeListActivity extends SingleFragmentActivity implements CrimeLi
                         .findFragmentById(R.id.fragment_container);
         listFragment.updateUI();
     }
+
+
 
 }

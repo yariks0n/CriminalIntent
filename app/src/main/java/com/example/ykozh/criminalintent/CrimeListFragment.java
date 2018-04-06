@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,6 +31,7 @@ public class CrimeListFragment extends Fragment {
     public interface Callbacks {
         void onCrimeSelected(Crime crime);
     }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -48,6 +50,28 @@ public class CrimeListFragment extends Fragment {
         mCallbacks = null;
     }
 
+    private void setUpItemTouchHelper() {
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                int swipedPosition = viewHolder.getAdapterPosition();
+                List<Crime> crimes = CrimeLab.get(getActivity()).getCrimes();
+                Crime mCrime = crimes.get(swipedPosition);
+                CrimeLab.get(getActivity()).deleteCrime(mCrime);
+                updateUI();
+            }
+
+        };
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(mCrimeRecyclerView);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -64,6 +88,7 @@ public class CrimeListFragment extends Fragment {
         }
 
         updateUI();
+        setUpItemTouchHelper();
 
         return view;
     }
